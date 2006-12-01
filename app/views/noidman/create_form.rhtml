@@ -1,0 +1,14 @@
+<h2 id="header">Create new persistent identifiers</h2>
+<p>Create up to twenty new persistent identifiers for digital objects represented by URLs.  Each entry must be a valid http or https URL, and must not have already had an identifier created for it.  The form will let you know if either of these requirements have not been met.</p>
+<p>
+<%= start_form_tag :action => 'create' %>
+<% 20.times do |i| -%>
+  <label for="url<%= sprintf("%02d", i) %>">URL <%= sprintf("%02d", i+1) %></label>
+  <%= text_field 'pid', 'url' + sprintf("%02d", i), :size => 75 %><br/>
+<% end -%>
+<%= submit_tag "Create" %>
+<%= end_form_tag %>
+</p>
+<p>
+  <%= link_to 'Back', :action => 'index' %> <br/>
+</p>
