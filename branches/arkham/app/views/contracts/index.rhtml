@@ -1,0 +1,26 @@
+<h1>Listing contracts</h1>
+
+<table>
+  <tr>
+    <th>Statement</th>
+    <th>Label</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+  </tr>
+  
+<% for contract in @contracts %>
+  <tr>
+    <td><%=h contract.statement %></td>
+    <td><%=h contract.label %></td>
+    <td><%=h contract.created_at %></td>
+    <td><%=h contract.updated_at %></td>
+    <td><%= link_to 'Show', contract_path(contract) %></td>
+    <td><%= link_to 'Edit', edit_contract_path(contract) %></td>
+    <td><%= link_to 'Destroy', contract_path(contract), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New contract', new_contract_path %>

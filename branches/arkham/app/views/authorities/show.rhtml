@@ -1,0 +1,23 @@
+<p>
+  <b>Number:</b>
+  <%=h @authority.number %>
+</p>
+
+<p>
+  <b>Label:</b>
+  <%=h @authority.label %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=h @authority.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=h @authority.updated_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_authority_path(@authority) %> |
+<%= link_to 'Back', authorities_path %>

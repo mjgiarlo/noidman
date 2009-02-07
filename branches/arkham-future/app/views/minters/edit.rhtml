@@ -1,0 +1,32 @@
+<h1>Editing minter</h1>
+
+<%= error_messages_for :minter %>
+
+<% form_for(:minter, :url => minter_path(@minter), :html => { :method => :put }) do |f| %>
+  <p>
+    <b>Label</b><br />
+    <%= f.text_field :label %>
+  </p>
+
+  <p>
+    <b>Random</b><br />
+    <%= f.check_box :random %>
+  </p>
+
+  <p>
+    <b>Prefix</b><br />
+    <%= f.text_field :prefix %>
+  </p>
+
+  <p>
+    <b>Authority</b><br />
+    <%= f.text_field :authority_id %>
+  </p>
+
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', minter_path(@minter) %> |
+<%= link_to 'Back', minters_path %>

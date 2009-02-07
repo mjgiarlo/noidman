@@ -1,0 +1,13 @@
+<p>
+  <b>Statement:</b>
+  <%=h @contract.statement %>
+</p>
+
+<p>
+  <b>Label:</b>
+  <%=h @contract.label %>
+</p>
+
+
+<%= link_to 'Edit', edit_contract_path(@contract) %> |
+<%= link_to 'Back', contracts_path %>

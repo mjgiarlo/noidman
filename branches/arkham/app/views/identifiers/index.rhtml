@@ -1,0 +1,37 @@
+<h1>Listing identifiers</h1>
+<p>
+<table>
+  <tr>
+    <th>Ark</th>
+    <th>Url</th>
+    <th>Comment</th>
+    <th>Metadata</th>
+    <th>Authority</th>
+    <th>Contract</th>
+    <th>User</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+  </tr>
+  
+<% for identifier in @identifiers %>
+  <tr>
+    <td><%=h identifier.ark %></td>
+    <td><%=h identifier.url %></td>
+    <td><%=h identifier.comment %></td>
+    <td><%=h identifier.metadata %></td>
+    <td><%=h identifier.authority_id %></td>
+    <td><%=h identifier.contract_id %></td>
+    <td><%=h identifier.user_id %></td>
+    <td><%=h identifier.created_at %></td>
+    <td><%=h identifier.updated_at %></td>
+    <td><%= link_to 'Show', identifier_path(identifier) %></td>
+    <td><%= link_to 'Edit', edit_identifier_path(identifier) %></td>
+    <td><%= link_to 'Destroy', identifier_path(identifier), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New identifier', new_identifier_path %>
+</p>
