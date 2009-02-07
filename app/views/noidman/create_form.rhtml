@@ -1,0 +1,16 @@
+<h2>Create new persistent identifiers</h2>
+        <p>
+          Create new persistent identifiers for digital objects represented by URLs.  Each 
+          entry must be a valid http or https URL, and must not have already had an identifier 
+          created for it.  The form will let you know if either of these requirements have not been met.
+        </p>
+        <p>
+          <% form_tag :action => 'create' do -%>
+            <ol id="urls">
+              <li>
+                <input id="pid_1" name="pid[1]" type="text" class="text" onfocus="addURL();"/>
+              </li>
+            </ol>
+            <%= submit_tag "Create" %>
+          <% end -%>
+        </p>

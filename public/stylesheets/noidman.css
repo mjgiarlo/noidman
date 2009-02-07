@@ -1,0 +1,161 @@
+/**************************************************************************
+Background colour, fonts, margins, all are done here
+**************************************************************************/
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	background-color: #fff;
+}
+
+/**************************************************************************
+All the goodness of links
+**************************************************************************/	
+a:link, a:visited, a:active {
+	color: #999;
+	text-decoration: none;
+}
+
+/**************************************************************************
+Need I comment?
+**************************************************************************/
+a:hover {
+	text-decoration: underline;
+	color: #f90;
+}
+
+
+/**************************************************************************
+This is the giant white box that holds everything together
+**************************************************************************/
+#thebox {
+	width: 60%;
+	min-width: 60%;
+	max-width: 75%;
+	background-color: white;
+	color: #666;
+	border: 1px #cccccc solid;
+	margin: 50px auto 0px auto;
+	padding: 0px 20px 0 20px;
+	/*overflow: auto;*/
+}
+
+/**************************************************************************
+This was the best way I thought they orange square logo thingy could be 
+displayed. The logo coding looks really messy and rather horrible. I'm sure 
+there are better ways of doing this. Please drop me a line if you know how.
+**************************************************************************/
+#logo { 
+	text-align: center;
+	width: 15%;
+	margin: 0px 15px 17px -10px;
+	padding: 35px 10px 30px 10px;
+	background-color: #f90;
+	color: #fff;
+	font-family: Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 12px;
+	letter-spacing: 6px;
+	text-transform: uppercase;
+}
+
+/**************************************************************************
+Navigation bar, lists, and links - Uses Gill Sans for the good ol' Mac. 
+I'm using different linking styles for the navigation bar. Also, <li> tags 
+are used.
+**************************************************************************/
+#nav {
+	width: 85%;
+	margin: -65px 0px 50px 100px;
+	padding: 0px 0px 10px 20px;
+    word-spacing: 2em;
+	color: #999;
+	font-family: 'Gill Sans', Verdana, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 11px;
+}
+
+#nav li {
+	list-style: none;
+	display: inline;
+	margin-right: 20px;
+}
+
+#nav form {
+    display: inline;
+}
+
+#nav a {
+	font-size: 10px;
+	font-weight: bold;
+	color: #000;
+	text-decoration: none;
+}
+
+#nav a:hover {
+	color: #f90;
+	text-decoration: underline;
+}
+
+/**************************************************************************
+The content - full of goodness and textaulity, hehe.
+**************************************************************************/
+#content {
+	color: #666;
+	font-family: 'Gill Sans', Verdana, Helvetica, sans-serif;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 10px 10px 10px;
+	width: 100%;
+}
+
+/**************************************************************************
+Header #1 - This header displays the topic name of text
+**************************************************************************/
+#content h1 {
+    font-size: 12px;
+}
+
+#content h1 a:link, a:visited, a:active {
+	color: #f90;
+	font-family: 'Gill Sans', Verdana, Helvetica, sans-serif;
+	font-weight: normal;
+}
+
+#content h1 a:hover {
+	text-decoration: underline;
+	font-family: 'Gill Sans', Verdana, Helvetica, sans-serif;
+	color: #f90;
+}
+
+/**************************************************************************
+Header #2 - This header displays the date
+**************************************************************************/
+
+#content h2 { 
+    color: #000;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+#content table {
+    padding: 0px;
+    border-spacing: 10px;
+} 
+
+#content input.text {
+    width: 100%;
+    background-color: #f90;
+}
+
+#foot {
+    text-align: center;
+    color: #696969;
+}
+
+.center {
+    text-align: center;
+}
+
+.in-line {
+    display: inline;
+}
