@@ -1,0 +1,7 @@
+<h2>Search for Noids</h2>
+        <p>
+          <% form_tag :action => 'search' do -%>
+            <input type="text" id="query" name="query" value="Search" onFocus="this.value=''"/>
+            <%= submit_tag 'Search' %>
+          <% end -%>
+        </p>

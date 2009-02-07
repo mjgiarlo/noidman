@@ -1,0 +1,18 @@
+<h2>Edit ark:/<%= @noid_id %></h2>
+        <p>
+          Edit the URL bound to the specified identifier or delete the URL, leaving the identifier unassigned.
+        </p>
+        <p>
+          <% form_tag( { :action => 'replace', :id => @noid_id }, { :class => 'in-line' } ) do -%>
+            <label for="url">URL</label>
+            <input type="text" id="url" name="url" size="<%= @size %>" value="<%= @the_url %>"/>
+    <% if @the_url.empty? -%>
+            <input type="hidden" id="new" name="new" value="new"/> 
+    <% end -%>
+            <%= submit_tag 'Edit URL' %>
+          <% end -%>
+          <%= link_to 'Delete URL', { :action => 'delete', :id => @noid_id }, :confirm => "Really delete #@the_url?" %>
+        </p>
+        <p>
+          <%= link_to 'Back', :action => 'view' %>
+        </p>
