@@ -282,7 +282,6 @@ end
 <ul><li>Notion of "collection" ARKs, "item" ARKs, and "representation" ARKs (deferred to ArkhamFuture)
 </li></ul></li><li>All searchable fields should be indexed in the db as appropriate
 </li><li>Hyphens should be permissible, and yet semantically meaningless, in ARKs (deferred to ArkhamFuture)
-
 </li><li>Model should verify user's role before any modifying operations (deferred to ArkhamFuture)
 </li></ul><h3 id="Model:Validations">Model: Validations</h3>
 <ul><li>Identifiers: Valid HTTP/HTTPS URL
