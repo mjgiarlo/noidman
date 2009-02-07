@@ -2,7 +2,7 @@
 = Noid.rb: A Ruby noid client =
 
 <p>
-Noid.rb is a Ruby library that acts as a facade for the Perl-based [http://www.cdlib.org/inside/diglib/ark/noid.pdf Noid] tool developed at the California Digital Library.  Noid.rb wraps a number of Noid functions and also provides a few extra capabilities for finding and dumping Noid-minted identifiers.
+Noid.rb is a Ruby library that acts as a facade for the Perl-based [http://www.cdlib.org/inside/diglib/ark/noid.pdf Noid (PDF)] tool developed at the California Digital Library.  Noid.rb wraps a number of Noid functions and also provides a few extra capabilities for finding and dumping Noid-minted identifiers.
 </p>
 <p>
 [http://code.google.com/p/noidman/source/browse/trunk/lib/Noid.rb Noid.rb] is available via the Noidman trunk in the repository:
