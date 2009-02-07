@@ -1,0 +1,121 @@
+#labels Featured,Phase-Deploy
+= Noidman: Installation =
+
+<p>
+These are the steps I took to install Noidman and migrate releases into production.  Some steps are Gentoo-specific, and YMMV.
+</p>
+<h2 id="Installationsteps">Installation steps</h2>
+<p>
+Verify Perl 5.8 installed
+</p>
+{{{
+perl -v
+}}}
+<p>
+Verify Ruby 1.8.4 installed
+</p>
+{{{
+ruby -v
+}}}
+<p>
+Install Perl module (and its dependencies) for Noid
+</p>
+{{{
+cpan install Noid
+}}}
+<p>
+
+Install required packages (BDB, Ruby-bdb, rails, fastcgi, etc.)
+</p>
+{{{
+emerge dev-perl/BerkeleyDB
+emerge dev-ruby/rubygems
+emerge dev-ruby/ruby-bdb
+emerge dev-lang/swig
+USE="-mysql" emerge dev-ruby/rails
+emerge dev-libs/fcgi
+emerge dev-ruby/ruby-fcgi
+emerge net-www/mod_fastcgi
+}}}
+<p>
+Edit Apache configs
+</p>
+<ul><li>add "-D FASTCGI" to /etc/conf.d/apache2
+</li><li>create /etc/apache2/vhosts.d/arks_domain_tld.conf
+</li><li>include "AllowEncodedSlashes on" directive
+</li><li>add rewrite for noid resolution (See Noid documentation)
+</li><li>add rewrite for rails app 
+</li><li>add FastCgiServer directive for static fcgi
+</li><li>move proxy directives into default vhost 
+</li></ul><p>
+Create passwd file for http basic auth
+</p>
+{{{
+/usr/sbin/htpasswd2 -c /etc/apache2/noidman.htpasswd USERNAME
+}}}
+<p>
+Create folder for vhost content
+</p>
+{{{
+mkdir /var/www/arks
+}}}
+<p>
+Set-up Noid in /var/www/arks/resolve 
+</p>
+<ul><li>see <a class="ext-link" href="http://search.cpan.org/dist/Noid/noid"><span class="icon">Noid documentation</span></a>
+</li></ul><p>
+Checkout production code
+</p>
+{{{
+cd /var/www/arks
+svn checkout http://noidman.googlecode.com/svn/trunk/ noidman-read-only  
+}}}
+<p>
+Fix up permissions
+</p>
+{{{
+chown -R apache:apache /var/www/arks
+}}}
+<p>
+Restart Apache
+</p>
+{{{
+/etc/init.d/apache restart
+}}}
+<h2 id="Migratinganewreleaseintoproduction">Migrating a new release into production</h2>
+<p>
+Check versions of Ruby and Rails
+</p>
+{{{
+ruby -v
+rails -v
+}}}
+<p>
+Update gems if appropriate to release
+</p>
+{{{
+sudo gem update
+sudo gem cleanup
+}}}
+<p>
+Change into Noidman directory, move working copy, checkout production-tagged release, let Apache account own the app
+</p>
+{{{
+cd /var/www/arks/
+sudo mv noidman noidman-0.1.0
+sudo svn checkout http://diglib2.princeton.edu/opensvn/noidman/trunk noidman
+sudo chown -R apache:apache noidman
+}}}
+<p>
+If Rails has not been frozen in the application's "vendor" directory, make sure RAILS_GEM_VERSION in environment.rb matches version of Rails installed
+</p>
+<p>
+Kill FCGI processes (just to be sure), and restart Apache
+</p>
+{{{
+for fcgi_pid in `ps -ef | grep noidman | grep -v grep | awk '{ print $2 }'`; do sudo kill -9 $fcgi_pid; done
+sudo /etc/init.d/apache2 restart
+}}}
+<p>
+If you can't load the app in a browser, check /var/log/apache2/error_log and noidman/log/*.log.
+</p>
