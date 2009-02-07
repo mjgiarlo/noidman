@@ -8,7 +8,7 @@ I'm using this document to flesh out some ideas about a new Rails application fo
 Why "Arkham?"  First, it's one of the few English words that begin with "ARK" and do not relate to the state of Arkansas.  Second, it's a geeky reference to Batman and H.P. Lovecraft.  And third, it's a homophone for "ARK 'em", as in "Got URLs?  ARK 'em!"
 </p>
 <p>
-The ArkhamFuture describes a fully RESTful ARK web application &amp; service that could be implemented by the broader ARK community, and was my first effort to refactor [Noidman]; alas, it was a bit too ambitious for current development.  I am scaling back and proceeding with a "mostly RESTful" web application for Princeton's specific needs, and periodically sketching out ideas for the ArkhamFuture.
+The ArkhamFuture describes a fully RESTful ARK web application and service/API that could be implemented by the broader ARK community, and was my first effort to refactor [Noidman]; alas, it was a bit too ambitious for current development.  I am scaling back and proceeding with a "mostly RESTful" web application for Princeton's specific needs, and periodically sketching out ideas for the ArkhamFuture.
 </p>
 <p>
 When Arkham is ready for release, you may check the code out freely:
