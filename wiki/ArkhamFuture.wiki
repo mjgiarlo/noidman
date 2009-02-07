@@ -1,90 +1,106 @@
 #labels Featured,Phase-Design
-= Arkham: ARK Application Ideas =
+= Arkham Future =
 
 <p>
-I'm using this document to flesh out some ideas about a new Rails application for management of ARK-compliant persistent identifiers, Arkham.  Arkham is intended to replace <a class="wiki" href="Noidman">Noidman</a>, a hastily cobbled together Rails front-end to the Perl-based NOID tool developed by the CDL.  Noidman serves its purpose well but is more tightly coupled to the noid tool than I would like, and prevents taking full advantage of Rails models.  
-</p>
+I'm using this document to flesh out my ideas about a future refactoring of [Arkham]. Any code changes will be taking place in the <a href="http://code.google.com/p/noidman/source/browse/#svn/branches/arkham-future">'future' branch</a>. </p>
+
+== Summary ==
+
 <p>
-Why "Arkham?"  First, it's one of the few English words that begin with "ARK" and do not relate to the state of Arkansas.  Second, it's a geeky reference to Batman and H.P. Lovecraft.  And third, it's a homophone for "ARK 'em", as in "Got URLs?  ARK 'em!"
-</p>
+The ARK service allows ARKs -- managed, persistent, and globally unique identifiers -- to be created for URLs. Each ARK may also have a statement of persistence support ("contract") and a metadata record attached, but are optional. Though the service is being designed primarily for our use at the Princeton University Library, there is interest in such an application outside of Princeton. Thus the app should support multiple name assigning authorities. The application will also make use of role-based authorization, though I am not yet sure how I will handle the authz or authn. The app should be fully compliant with the [http://www.cdlib.org/inside/diglib/ark/arkspec.pdf ARK specification (PDF)] upon completion. </p>
 <p>
-The ArkhamFuture describes a fully RESTful ARK web application and service/API that could be implemented by the broader ARK community, and was my first effort to refactor [Noidman]; alas, it was a bit too ambitious for current development.  I am scaling back and proceeding with a "mostly RESTful" web application for Princeton's specific needs, and periodically sketching out ideas for the ArkhamFuture.
-</p>
-<p>
-When Arkham is ready for release, you may check the code out freely:
+Arkham Future is being developed here:
 </p>
 {{{
-svn checkout http://noidman.googlecode.com/svn/branches/arkham/ arkham-read-only  
+svn checkout http://noidman.googlecode.com/svn/branches/arkham-future/ arkham-read-only  
 }}}
 <p>
-In the meantime, you may browse the <a href="http://code.google.com/p/noidman/source/browse/#svn/branches/arkham">source code</a> as it develops.
+In the meantime, you may browse the <a href="http://code.google.com/p/noidman/source/browse/#svn/branches/arkham-future">source code</a> as it develops.
 </p>
-<h2 id="Summary">Summary</h2>
-<p>
-The ARK service allows ARKs -- managed, persistent, and globally unique identifiers -- to be created for URLs.  Each ARK may also have a statement of persistence support ("contract") and a metadata record attached, but are optional.  Other fields may also be attached; our catalogers and metadata specialists have requested a "comment" field, for instance.  
-</p>
-<p>
-Arkham
-</p>
-<ul><li>is being designed primarily for our use at the Princeton University Library, but there is interest in such an application outside of Princeton.  There is a "future" branch which will implement ideas from <a class="wiki" href="ArkhamFuture">ArkhamFuture</a>, but that is months away.  
-</li><li>may make use of role-based authorization, though that may not be necessary now that I scaled back the requirements.  
-</li><li>should be fully compliant with the <a class="ext-link" href="http://www.cdlib.org/inside/diglib/ark/arkspec.pdf"><span class="icon">ARK specification (PDF)</span></a>, though it may only implement the common bits of the spec we're using at Princeton and defer the rest to <a class="wiki" href="ArkhamFuture">ArkhamFuture</a>.
-</li><li>is available under the <a class="ext-link" href="http://en.wikipedia.org/wiki/MIT_License"><span class="icon">MIT/X11 License</span></a>.
-</li></ul><h3 id="Generalizedschema">Generalized schema</h3>
-<ul><li>Service has one authority 
-<ul><li>Authority has many identifiers
-<ul><li>Identifiers are unique
-</li></ul></li></ul></li><li>Service has many users
-<ul><li>User has many identifiers
-</li></ul></li><li>Service has many contracts
-<ul><li>Contract has many identifiers
-</li></ul></li></ul><h2 id="Model">Model</h2>
-<h3 id="Naivedomainmodel">Naive domain model</h3>
+
+== General == 
+
+  * The app should be a stand-alone web application as well as a web service. App should make use of Rails web service hooks and generate WADL (or WSDL) description of API for clients.
+  * Roles will be used for authZ. Use HTTP authentication in a before_filter for controllers/actions requiring authN? 
+
+=== Generalized schema ===
+
+See the bulleted list below or a graphical representation (under work)
+
+  * Service has many authorities
+    * Authority has many roles (see below)
+    * Authority has many minters
+      * Minter has many identifiers (see below)
+      * Minter has many roles (see below)
+      * Minter MAY HAVE one default contract 
+    * Authority has many contracts
+      * Contract has many identifiers (see below) 
+    * Authority MAY HAVE one default contract 
+  * Service has many roles
+    * Role has many users
+      * User has many roles
+      * User has many identifiers
+        * Identifiers should be unique within the minter and within the containing authority 
+
+== Model ==
+
+===  Naive domain model ===
+
 {{{
 class Identifier < ActiveRecord::Base
-  belongs_to :user
-  belongs_to :contract
-  belongs_to :authority
-
-  validates_presence_of :ark, :url, :user_id, :authority_id
-  validates_uniqueness_of :ark, :url
-
-  def validate
-    begin
-      uri = URI.parse(url)
-    rescue URI::InvalidURIError
-      errors.add(:url, 'Invalid URL!')
-    end
-  end
+  belongs_to :users
+  belongs_to :minters
+  belongs_to :contracts
+  validates_presence_of :ark, :url, :minter_id, :user_id
+  validates_uniqueness_of :ark, :url, :scope => [:minter_id]
 end
 }}}
 {{{
-class User > ActiveRecord::Base
+class User < ActiveRecord::Base
+  has_and_belongs_to_many :roles
   has_many :identifiers
-  validates_presence_of :name, :password, :email
+  validates_presence_of :name
 end
 }}}
 {{{
-class Contract > ActiveRecord::Base
-  has_many :identifiers
-  validates_presence_of :statement, :label
+class Role < ActiveRecord::Base
+  has_and_belongs_to_many :users
+  belongs_to :authorities
+  belongs_to :minters
+  validates_presence_of :name
 end
 }}}
 {{{
-class Authority > ActiveRecord::Base
+class Contract < ActiveRecord::Base
   has_many :identifiers
-  validates_presence_of :number, :label
-  validates_uniqueness_of :number, :label
-  validates_numericality_of :number
-  # XXX an identifier must be minted and returned prior to the ActiveRecord::Base#create method invocation
+  validates_presence_of :statement
+end
+}}}
+{{{
+class Minter < ActiveRecord::Base
+  has_many :identifiers
+  belongs_to :authorities
   def mint
-    ArkUtils.mint( self )
+    ArkUtils.mint!( self )
   end
 end
 }}}
-<h3 id="Utilityclasses">Utility classes</h3>
+{{{
+class Authority < ActiveRecord::Base
+  has_many :minters
+  validates_presence_of :number, :random
+  validates_uniqueness_of :number
+  validates_numericality_of :number
+end
+}}}
+
+=== Utility classes ===
+
 {{{
 class ArkUtils
+  # mint a unique ARK within the given minter (and authority)
+  # make sure to check the value of minter.random and minter.prefix
+
   XDIGITS = %w( 0 1 2 3 4 5 6 7 8 9 b c d f g h j k m n p q r s t v w x z )
   DIGITS = %w( 0 1 2 3 4 5 6 7 8 9 )
 
@@ -135,13 +151,6 @@ class ArkUtils
   end
 end 
 }}}
-<h3 id="Generators">Generators</h3>
-{{{
-  script/generate scaffold_resource Identifier ark:string url:string comment:text metadata:text authority_id:integer contract_id:integer user_id:integer created_at:datetime updated_at:datetime
-  script/generate scaffold_resource User name:string password:string email:string admin:boolean created_at:datetime updated_at:datetime
-  script/generate scaffold_resource Contract statement:text label:string created_at:datetime updated_at:datetime 
-  script/generate scaffold_resource Authority number:integer label:string created_at:datetime updated_at:datetime
-}}}
 <h3 id="Migrationsbasedonnaivedomainmodel">Migrations based on naive domain model</h3>
 <p>
 Basic migrations are generated by scaffold_resource generators above.  Just add in :default and :null values where appropriate.
@@ -154,11 +163,11 @@ class CreateIdentifiers < ActiveRecord::Migration
       t.column :url, :string, :null => false
       t.column :comment, :text
       t.column :metadata, :text
-      t.column :authority_id, :integer, :null => false
+      t.column :minter_id, :integer, :null => false
       t.column :contract_id, :integer
       t.column :user_id, :integer, :null => false
-      t.column :created_at, :datetime
-      t.column :updated_at, :datetime
+      t.column :created_on, :datetime
+      t.column :updated_on, :datetime
     end
   end
 
@@ -172,11 +181,8 @@ class CreateUsers < ActiveRecord::Migration
   def self.up
     create_table :users do |t|
       t.column :name, :string, :null => false
-      t.column :password, :string, :null => false
-      t.column :email, :string, :null => false
-      t.column :admin, :boolean, :default => false
-      t.column :created_at, :datetime
-      t.column :updated_at, :datetime
+      t.column :password, :string
+      t.column :email, :string
     end
   end
 
@@ -186,13 +192,41 @@ class CreateUsers < ActiveRecord::Migration
 end
 }}}
 {{{
+class CreateUsersRoles < ActiveRecord::Migration
+  def self.up
+    create_table :users_roles do |t|
+      t.column :user_id, :integer, :null => false
+      t.column :role_id, :integer, :null => false
+    end
+  end
+
+  def self.down
+    drop_table :users_roles
+  end
+end
+}}}
+{{{
+class CreateRoles < ActiveRecord::Migration
+  def self.up
+    create_table :roles do |t|
+      t.column :name, :string, :null => false
+      t.column :label, :text
+      t.column :authority_id, :integer, :null => false
+      t.column :minter_id, :integer, :null => false
+    end
+  end
+
+  def self.down
+    drop_table :roles
+  end
+end
+}}}
+{{{
 class CreateContracts < ActiveRecord::Migration
   def self.up
     create_table :contracts do |t|
       t.column :statement, :text, :null => false
-      t.column :label, :string, :null => false
-      t.column :created_at, :datetime
-      t.column :updated_at, :datetime
+      t.column :label, :string
     end
   end
 
@@ -202,14 +236,27 @@ class CreateContracts < ActiveRecord::Migration
 end
 }}}
 {{{
+class CreateMinters < ActiveRecord::Migration
+  def self.up
+    create_table :minters do |t| 
+      t.column :label, :string
+      t.column :random, :boolean, :null => false, :default => false
+      t.column :prefix, :string
+      t.column :authority_id, :integer, :null => false
+    end
+  end
+
+  def self.down
+    drop_table :minters
+  end
+end
+}}}
+{{{
 class CreateAuthorities < ActiveRecord::Migration
   def self.up
     create_table :authorities do |t| 
       t.column :number, :integer, :null => false
-      t.column :label, :string, :null => false
-      t.column :host, :string, :null => false
-      t.column :created_at, :datetime
-      t.column :updated_at, :datetime
+      t.column :label, :string
     end
   end
 
@@ -223,69 +270,141 @@ class CreateIndexes < ActiveRecord::Migration
   def self.up
     add_index :identifiers, :ark
     add_index :identifiers, :url
+    add_index :identifiers, :comment
+    add_index :identifiers, :metadata
     add_index :users, :name
-    add_index :contracts, :label
-    add_index :authorities, :label
+    add_index :roles, :name
+    add_index :contracts, :statement
     add_index :authorities, :number
   end
 
   def self.down
     remove_index :identifiers, :ark
     remove_index :identifiers, :url
+    remove_index :identifiers, :comment
+    remove_index :identifiers, :metadata
     remove_index :users, :name
-    remove_index :contracts, :label
+    remove_index :roles, :name
+    remove_index :contracts, :statement
     remove_index :authorities, :number
-    remove_index :authorities, :label
   end
 end
 }}}
 <h3 id="Initialdatacreation">Initial data creation</h3>
-<p>
-XXX insert fixtures here?
-</p>
 {{{
-class AddTestData < ActiveRecord::Migration
+class AddRoles < ActiveRecord::Migration
   def self.up
-    contract = Contract.create :statement => 'yada yada yada', 
-      :label =>  'Ridiculous statement'
-    authority = Authority.create :number => 88435, 
-      :label => 'Princeton University Library', 
-      :host => 'arks.princeton.edu'
-    user = User.create :name => 'Michael J. Giarlo', 
-      :password =>  'test', 
-      :email => 'mgiarlo@princeton.edu',
-      :admin => true
-    identifier = Identifier.create :ark => authority.mint,
-      :url =>  'http://diglib.princeton.edu/',
-      :comment => 'This is a comment field.  It is searchable.',
-      :authority_id => authority.id,
-      :user_id => user.id,
-      :contract_id => contract.id
+    @role = Role.create :name => 'admin',
+      :label => 'Administrator role - godly abilities'
   end
 
   def self.down
-    # find and delete test data
-    [Contract.find_by_statement( 'yada yada yada' ), 
-     Authority.find_by_number( 88435 ), 
-     User.find_by_email( 'mgiarlo@princeton.edu' ), 
-     Identifier.find_by_url( 'http://diglib.princeton.edu/' )].each do |object| 
-      object.destroy unless object.nil? 
-    end
+    Role.delete @role
   end
 end
 }}}
-<h3 id="Model:Methodsandothernotes">Model: Methods and other notes</h3>
-<ul><li>It might be nice to have the ability to create multiple authorities (deferred to ArkhamFuture)
-</li><li>Model will include all validation methods
-</li><li>Model will include methods for minting (delegated to ARK utilities class)
-</li><li>Should support variants ('.') and hierarchy ('/') as described in ARK spec (deferred to ArkhamFuture)
-<ul><li>Notion of "collection" ARKs, "item" ARKs, and "representation" ARKs (deferred to ArkhamFuture)
-</li></ul></li><li>All searchable fields should be indexed in the db as appropriate
-</li><li>Hyphens should be permissible, and yet semantically meaningless, in ARKs (deferred to ArkhamFuture)
-</li><li>Model should verify user's role before any modifying operations (deferred to ArkhamFuture)
-</li></ul><h3 id="Model:Validations">Model: Validations</h3>
-<ul><li>Identifiers: Valid HTTP/HTTPS URL
-</li></ul><h2 id="Controller">Controller</h2>
+{{{
+class AddUsers < ActiveRecord::Migration
+  def self.up
+    @user = User.create :name => 'Michael J. Giarlo',
+      :password =>  'This is not a real password.',
+      :email => 'mgiarlo@princeton.edu'
+  end
+
+  def self.down
+    User.delete @user
+  end
+end
+}}}
+{{{
+class AddUsersRoles < ActiveRecord::Migration
+  def self.up
+    # assuming user_id and role_id are 1 for now
+    execute "INSERT INTO users_roles (user_id, role_id) VALUES (1, 1)"
+  end
+
+  def self.down
+    execute "DELETE FROM users_roles WHERE user_id = 1 AND role_id = 1"
+  end
+end
+}}}
+{{{
+class AddContracts < ActiveRecord::Migration
+  def self.up
+    @contract = Contract.create :statement => 'We agree to maintain this persistent identifier in perpetuity in accordance with yada yada yada',
+      :label =>  'Persistence in perpetuity',
+  end
+
+  def self.down
+    Contract.delete @contract
+  end
+end
+}}}
+{{{
+class AddAuthorities < ActiveRecord::Migration
+  def self.up
+    @authority = Authority.create :number => 83030,
+      :label =>  'Princeton University Library',
+  end
+
+  def self.down
+    Authority.delete @authority
+  end
+end
+}}}
+{{{
+class AddMinters < ActiveRecord::Migration
+  def self.up
+    # assuming authority_id is 1 for now
+    @minter = Minter.create :label => 'Sequential EADs',
+      :random => false,
+      :authority_id => 1,
+      :prefix => 'ead'
+  end
+  def self.down
+    Minter.delete @minter
+  end
+end
+}}}
+{{{
+class AddIdentifiers < ActiveRecord::Migration
+  def self.up
+    # assuming authority_id and user_id are 1 for now
+    authority = Authority.find( :number => 83030 )
+    minter = Minter.find(authority, :prefix == 'ead' )
+    @identifier = Identifier.create :ark => minter.mint!,
+      :url =>  'http://diglib.princeton.edu/',
+      :authority_id => authority,    
+      :user_id => 1
+  end
+
+  def self.down
+    Identifier.delete @identifier
+  end
+end
+}}}
+
+=== Model: Methods and other notes ===
+
+  * It might be nice to have the ability to create multiple authorities
+  * Model will include all validation methods
+  * Model will include methods for minting and binding across minters
+  * Should support variants ('.') and hierarchy ('/') as described in ARK spec
+    * Notion of "collection" ARKs, "item" ARKs, and "representation" ARKs 
+  * All searchable fields should be indexed in the db, as appropriate
+  * Hyphens should be permissible, and yet semantically meaningless, in ARKs
+  * Model should verify user's role before any CUD operations 
+
+=== Model: Validations ===
+
+  * Valid HTTP/HTTPS URL
+  * URL get should not return HTTP error
+  * uniqueness of fields that should be unique
+  * ARK must not already be bound
+  * URL must not already be bound
+  * Deletions only available to users with most privileged role 
+
+<h2 id="Controller">Controller</h2>
 <p>
 The controllers should take full advantage of the REST and CRUD paradigms, since Rails does them so well.
 </p>
@@ -387,23 +506,18 @@ Enable all the REST magic via routes.
 </p>
 {{{
 ActionController::Routing::Routes.draw do |map|
-
-  map.connect 'ark:/*ark', :controller => 'identifiers', :action => 'resolve'
-  map.connect '', :controller => 'arkham', :action => 'index'
-  map.connect '/', :controller => 'arkham', :action => 'index'
-
-  map.resources :users do |users| 
-    users.resources :identifiers 
-  end
-
-  map.resources :contracts do |contracts| 
-    contracts.resources :identifiers
-  end
-
-  map.resources :authorities do |authorities|  
-    authorities.resources :identifiers 
-  end
-
-  map.resources :identifiers
+ActionController::Routing::Routes.draw do |map|
+  map.resources :bindings
+  map.resources :users
+  map.resources :roles
+  map.resources :contracts
+  map.resources :authorities
+  map.resources :minters
+  
+  # --for a model that belongs_to another or others
+  # map.resources :things do |things|
+  #   things.resources :subthings
+  # end
+end
 end
 }}}
