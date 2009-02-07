@@ -1,0 +1,26 @@
+#labels Featured,Phase-Implementation
+= Noidman =
+<p>
+Noidman is a Ruby on Rails-based web application for creating, managing, validating, and resolving persistent identifiers.  It is built around the Archival Resource Key identifier schema and is essentially a web front-end for the Noid (nice opaque identifier) tool released by the California Digital Library.  Noidman thus depends upon the Perl-based Noid tool, wrapping its functions in a Ruby facade class, [NoidRB Noid.rb].
+</p>
+<p>
+Note that I do not intend to continue developing Noidman; the coupling with the Noid tool was too limiting, and so I'm pouring all of my development time into [Arkham] instead.  Still, you may find the Noidman code useful and it's available now.
+</p>
+<p>
+Browse the [http://code.google.com/p/noidman/source/browse/#svn/trunk source code] if you wish.
+</p>
+<h2 id="Availability">Availability</h2>
+<p>
+You may check the code out freely:
+</p>
+{{{
+svn checkout http://noidman.googlecode.com/svn/trunk/ noidman-read-only  
+}}}
+<h2 id="License">License</h2>
+<p>
+Noidman is released under the [LICENSE MIT/X11 license].
+</p>
+<h2 id="Documentation">Documentation</h2>
+<p>
+You might be interested in [NoidmanInstallation installation steps].
+</p>
