@@ -1,0 +1,19 @@
+xml.instruct! :xml, :version => '1.0' 
+xml.rss( :version => '2.0' ) do
+  xml.channel do
+    xml.title( 'Feed of newly minted identifiers' )
+    xml.link( request.protocol + request.host_with_port + request.request_uri )
+    xml.description( "Last 10 identifiers minted" )
+    xml.language( 'en-us' )
+    @identifiers.first( 10 ).each do |identifier|
+      xml.item do
+        xml.title('ark:/' + identifier.authority.number.to_s + '/' + identifier.ark )
+        xml.description( "ARK '#{identifier.ark}' created for #{identifier.url} by #{identifier.user.name} with contract: '#{identifier.contract.statement}'" )
+        xml.pubDate( identifier.created_at )
+        xml.link( request.protocol + request.host_with_port + "/ark:/" + identifier.authority.number.to_s + '/' + identifier.ark )
+        xml.guid( request.protocol + request.host_with_port + "/ark:/" + identifier.authority.number.to_s + '/' + identifier.ark )
+      end
+    end
+  end
+end
+

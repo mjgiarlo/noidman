@@ -1,0 +1,56 @@
+<h1>New identifier</h1>
+
+<%= error_messages_for :identifier %>
+
+<% form_for(:identifier, :url => identifiers_path) do |f| %>
+  <p>
+    <b>Ark</b><br />
+    <%= f.text_field :ark %>
+  </p>
+
+  <p>
+    <b>Url</b><br />
+    <%= f.text_field :url %>
+  </p>
+
+  <p>
+    <b>Comment</b><br />
+    <%= f.text_area :comment %>
+  </p>
+
+  <p>
+    <b>Metadata</b><br />
+    <%= f.text_area :metadata %>
+  </p>
+
+  <p>
+    <b>Authority</b><br />
+    <%= f.text_field :authority_id %>
+  </p>
+
+  <p>
+    <b>Contract</b><br />
+    <%= f.text_field :contract_id %>
+  </p>
+
+  <p>
+    <b>User</b><br />
+    <%= f.text_field :user_id %>
+  </p>
+
+  <p>
+    <b>Created at</b><br />
+    <%= f.datetime_select :created_at %>
+  </p>
+
+  <p>
+    <b>Updated at</b><br />
+    <%= f.datetime_select :updated_at %>
+  </p>
+
+  <p>
+    <%= submit_tag "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', identifiers_path %>

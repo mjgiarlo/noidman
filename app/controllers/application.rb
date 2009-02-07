@@ -1,22 +1,14 @@
-# Filters added to this controller will be run for all controllers in the application.
+# Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
-require 'uri'
-
 class ApplicationController < ActionController::Base
+  # Pick a unique cookie name to distinguish our session data from others'
+  session :session_key => '_arkham_session_id'
+  before_filter :log_action, :only => %w( create update destroy )
   
-  def valid?( url )
-    return false if url.length < 10
-    begin
-      uri = URI.parse(url)
-      if uri.class != URI::HTTP and uri.class != URI::HTTPS
-        return false
-      end
-    rescue URI::InvalidURIError
-      return false
-    else
-      return true
-    end
+  def log_action
+    # XXX set level appropriately
+    # XXX pass in action and args
+    AUDIT_LOGGER.info "CREATE blah blah blah"
   end
-
 end

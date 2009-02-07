@@ -17,9 +17,3 @@ config.action_controller.perform_caching             = false
 # The :test delivery method accumulates sent emails in the
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
-
-# Noidman-specific configuration
-config.app_config.noid_directory = '/var/www/localhost/htdocs/nd/prod'
-config.app_config.resolve_noids = false
-config.app_config.relative_url = true
-config.app_config.relative_url_root = '/apps'

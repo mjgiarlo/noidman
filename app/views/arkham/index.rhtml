@@ -1,0 +1,13 @@
+<h1>Arkham</h1>
+<p>Welcome to the Arkham web application.</p>
+
+<form method="post" class="loginform" action="/arkham/login">
+  <p>
+    <label for="username">Username:</label>
+    <input type="text" name="username" class="textbox" id="username" /> 
+    <label for="password">Password:</label>
+    <input type="password" name="password" class="textbox" id="password" />
+  	<input type="submit" name="login" class="button" value="Login" />
+    or <%= link_to 'Register for account', :controller => 'arkham', :action => 'register' %>
+	</p>
+</form>

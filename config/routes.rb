@@ -15,18 +15,31 @@ ActionController::Routing::Routes.draw do |map|
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
-  # XXX implement this
-  #map.connect ':controller/service.wsdl', :action => 'wsdl'
+  # map.connect ':controller/service.wsdl', :action => 'wsdl'
 
-  # Identifier resolution interface
-  map.connect 'ark:/*ark', :controller => 'noidman', :action => 'get' 
+  # Special route for ARK resolution
+  map.connect 'ark:/*ark', :controller => 'identifiers', :action => 'resolve'
+
+  # Route requests to application index
+  map.connect '', :controller => 'arkham', :action => 'index'
+  map.connect '/', :controller => 'arkham', :action => 'index'
+
+  # REST/CRUD routes
+  map.resources :users do |users| 
+    users.resources :identifiers 
+  end
+
+  map.resources :contracts do |contracts| 
+    contracts.resources :identifiers
+  end
+
+  map.resources :authorities do |authorities|  
+    authorities.resources :identifiers 
+  end
+
+  map.resources :identifiers
 
   # Install the default route as the lowest priority.
+  map.connect ':controller/:action/:id.:format'
   map.connect ':controller/:action/:id'
- 
-  # This is an ugly kludge, since Rails 1.2 seems to break AllowEncodedSlashes-like behavior
-  map.connect ':controller/:action/:id/:broken'
-
-  # Catch-all
-  map.connect '*request', :controller => 'noidman', :action => 'index'
 end
