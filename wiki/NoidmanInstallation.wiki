@@ -103,8 +103,8 @@ Change into Noidman directory, move working copy, checkout production-tagged rel
 {{{
 cd /var/www/arks/
 sudo mv noidman noidman-0.1.0
-sudo svn checkout http://diglib2.princeton.edu/opensvn/noidman/trunk noidman
-sudo chown -R apache:apache noidman
+sudo svn checkout http://noidman.googlecode.com/svn/trunk/ noidman-read-only  
+sudo chown -R apache:apache noidman-read-only
 }}}
 <p>
 If Rails has not been frozen in the application's "vendor" directory, make sure RAILS_GEM_VERSION in environment.rb matches version of Rails installed
