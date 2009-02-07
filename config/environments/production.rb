@@ -16,8 +16,3 @@ config.action_controller.perform_caching             = true
 
 # Disable delivery errors if you bad email addresses should just be ignored
 # config.action_mailer.raise_delivery_errors = false
-
-# Noidman-specific configuration
-config.app_config.noid_directory = '/var/www/arks/resolve/prod'
-config.app_config.resolve_noids = false
-config.app_config.relative_url = false

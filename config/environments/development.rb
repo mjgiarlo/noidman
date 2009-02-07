@@ -19,8 +19,3 @@ config.action_view.debug_rjs                         = true
 
 # Don't care if the mailer can't send
 config.action_mailer.raise_delivery_errors = false
-
-# Noidman-specific configuration
-config.app_config.noid_directory = '/home/mgiarlo/noid/test'
-config.app_config.resolve_noids = true
-config.app_config.relative_url = false

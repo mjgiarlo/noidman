@@ -5,18 +5,15 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '1.2.1'
+RAILS_GEM_VERSION = '1.2.2'
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
-# Enable AppConfig plug-in
-require 'plugins/app_config/lib/configuration'
-
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence those specified here
   
-  # Skip frameworks you're not going to use
+  # Skip frameworks you're not going to use (only works if using vendor/rails)
   # config.frameworks -= [ :action_web_service, :action_mailer ]
 
   # Add additional load paths for your own custom dirs
@@ -24,11 +21,7 @@ Rails::Initializer.run do |config|
 
   # Force all environments to use the same logger level 
   # (by default production uses :info, the others :debug)
-  #config.log_level = :debug
-
-  #config.action_controller.consider_all_requests_local = true
-  #config.action_controller.debug_routes = true
-  #config.action_controller.perform_caching = false
+  # config.log_level = :debug
 
   # Use the database for sessions instead of the file system
   # (create the session table with 'rake db:sessions:create')
@@ -46,12 +39,6 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
   
   # See Rails::Configuration for more options
-
-  # Noidman-specific configurations
-  # -- using AppConfig plugin
-  # these configs are common to all environments.  put env-specific configs, such as noid_directory,
-  # in appropriate config/environments/*.rb files 
-  config.app_config.noid_script = '/usr/bin/noid'
 end
 
 # Add new inflection rules using the following format 
@@ -64,12 +51,3 @@ end
 # end
 
 # Include your application configuration below
-ActionController::AbstractRequest.relative_url_root = AppConfig.relative_url_root if AppConfig.relative_url
-
-# Change format of Logger entries
-class Logger
-  def format_message(severity, timestamp, progname, msg)
-    "[#{timestamp}] (pid:#{$$}) #{msg}\n" 
-  end
-end
-AUDIT_LOGGER = Logger.new( "#{RAILS_ROOT}/log/audit.log" )

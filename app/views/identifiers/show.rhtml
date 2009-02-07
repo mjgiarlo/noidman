@@ -1,0 +1,48 @@
+<p>
+  <b>Ark:</b>
+  <%=h @identifier.ark %>
+</p>
+
+<p>
+  <b>Url:</b>
+  <%=h @identifier.url %>
+</p>
+
+<p>
+  <b>Comment:</b>
+  <%=h @identifier.comment %>
+</p>
+
+<p>
+  <b>Metadata:</b>
+  <%=h @identifier.metadata %>
+</p>
+
+<p>
+  <b>Minter:</b>
+  <%=h @identifier.minter_id %>
+</p>
+
+<p>
+  <b>Contract:</b>
+  <%=h @identifier.contract_id %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%=h @identifier.user_id %>
+</p>
+
+<p>
+  <b>Created on:</b>
+  <%=h @identifier.created_on %>
+</p>
+
+<p>
+  <b>Updated on:</b>
+  <%=h @identifier.updated_on %>
+</p>
+
+
+<%= link_to 'Edit', edit_identifier_path(@identifier) %> |
+<%= link_to 'Back', identifiers_path %>

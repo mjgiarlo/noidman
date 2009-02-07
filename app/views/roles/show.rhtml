@@ -1,0 +1,23 @@
+<p>
+  <b>Name:</b>
+  <%=h @role.name %>
+</p>
+
+<p>
+  <b>Label:</b>
+  <%=h @role.label %>
+</p>
+
+<p>
+  <b>Authority:</b>
+  <%=h @role.authority_id %>
+</p>
+
+<p>
+  <b>Minter:</b>
+  <%=h @role.minter_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_role_path(@role) %> |
+<%= link_to 'Back', roles_path %>

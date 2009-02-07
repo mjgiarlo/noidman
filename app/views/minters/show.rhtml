@@ -1,0 +1,23 @@
+<p>
+  <b>Label:</b>
+  <%=h @minter.label %>
+</p>
+
+<p>
+  <b>Random:</b>
+  <%=h @minter.random %>
+</p>
+
+<p>
+  <b>Prefix:</b>
+  <%=h @minter.prefix %>
+</p>
+
+<p>
+  <b>Authority:</b>
+  <%=h @minter.authority_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_minter_path(@minter) %> |
+<%= link_to 'Back', minters_path %>

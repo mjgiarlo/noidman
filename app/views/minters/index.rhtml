@@ -1,0 +1,26 @@
+<h1>Listing minters</h1>
+
+<table>
+  <tr>
+    <th>Label</th>
+    <th>Random</th>
+    <th>Prefix</th>
+    <th>Authority</th>
+  </tr>
+  
+<% for minter in @minters %>
+  <tr>
+    <td><%=h minter.label %></td>
+    <td><%=h minter.random %></td>
+    <td><%=h minter.prefix %></td>
+    <td><%=h minter.authority_id %></td>
+    <td><%= link_to 'Show', minter_path(minter) %></td>
+    <td><%= link_to 'Edit', edit_minter_path(minter) %></td>
+    <td><%= link_to 'Destroy', minter_path(minter), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New minter', new_minter_path %>
